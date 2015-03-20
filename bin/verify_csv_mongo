@@ -1,0 +1,1 @@
+/usr/local/bin/Scripts/csv_mongo.py $1 $2 /bt/import/$3 Verify $4
