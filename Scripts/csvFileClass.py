@@ -13,26 +13,34 @@ from datetime import datetime
 
 class CsvFileStructure(object):
     '''
-    Purpose:  Creates class to represent CSV file structure
+    Purpose:  Creates class to represent the structure and format of a CSV file
     '''
 
     def __init__(self, file_in):
-        
+        '''
+        Purpose:  Initalize class
+                  Opens and reads CSV file
+                  Populates a python list with csv file column names
+                  Map and set the _id column name as required by MongoDB
+                  Automatically determine yype of each CSV column
+        Input: Name of CSV file.  File should be stored in project import directory
+        Output: Object of this class
+         '''       
         self.csv_filename = file_in
         self.key_field_name = 'MSISDN'  # Mongo DB field name
-        self.header_list = ""  # Python object holding header list
+        self.header_list = []  # Python object holding header list
         self.csv_header_row = ""
         self.sample_row1 = ""
         self.sample_row2 = ""
         self.row_count = 0
-        self.column_type = {}
+        self.column_type = []
         self.status = False
 
         #Method that opens file, does checks based on file content and structure
         self.openCSV()
 
         #create python list object to hold csv header row
-        self.header_list = self.createHeaderList(self.csv_header_row)
+        self.createHeaderList()
 
         #look for field named in self.key_field_name and update to _id
         #this is required by Mongo to identify primary key
@@ -40,7 +48,7 @@ class CsvFileStructure(object):
 
         #automatically determine type for each CSV file columm
         #The available types are: List, Number, String, Date, Blank
-        self.column_type = self.mapCsvColumns(self.sample_row1)
+        self.mapCsvColumns(self.sample_row1)
 
         self.status = True
 
@@ -49,38 +57,82 @@ class CsvFileStructure(object):
 
             
     def getStatus(self):
+        '''
+        Purpose: Get status of object initialization
+        Input:  None
+        Output: True if object initialization successful otherwise false
+        '''        
         return self.status
 
     
     def getCsvFileName(self):
+        '''
+        Purpose: Get CSV File Name
+        Input:  None
+        Output: CSV File Name
+        '''        
         return self.csv_filename
 
     
     def getHeader(self):
+        '''
+        Purpose: Get CSV File header record
+        Input:  None
+        Output: List object containing csv file column names
+        '''      
         return self.header_list
 
     
     def getSampleRow1(self):
+        '''
+        Purpose: Get a sample row from file (first row of data)
+        Input:  None
+        Output: String object that is data line from csv file
+        '''      
         return self.sample_row1
 
     
     def getSampleRow2(self):
+        '''
+        Purpose: Get a sample row from file (second row of data)
+        Input:  None
+        Output: String object that is data line from csv file
+        '''    
         return self.sample_row2
 
     
     def getNumberRows(self):
+        '''
+        Purpose: Get number of rows in CSV File
+        Input:  None
+        Output: CSV file row count
+        '''      
         return self.row_count
 
 
     def getColumnTypes(self):
+        '''
+        Purpose: Get CSV File column types
+        Input:  None
+        Output: List object containing csv file column formats e.g. Date, String..
+        '''     
         return self.column_type
     
     def getNumberColumns(self):
+        '''
+        Purpose: Get number of columns in CSV File
+        Input:  None
+        Output: CSV file column count
+        '''     
         return len( self.getHeader() )
 
 
     def printColumnReport(self):
-        
+        '''
+        Purpose: Report on column fields and types
+        Input:  None
+        Output: Report on column fields and types
+        '''             
         self.next_row_seq = self.getSampleRow1().strip().split(",")
         self.header_row = self.getHeader()
         self.column_type = self.getColumnTypes()
@@ -90,6 +142,11 @@ class CsvFileStructure(object):
                       + ' csv ' +  repr(self.next_row_seq[ self.num ] )  + '  ' )
             
     def printSummaryReport(self):
+        '''
+        Purpose: Summary Report on CSV file format and structure
+        Input:  None
+        Output: Summary Report on CSV file format and structure
+        '''  
         print('Total number of rows in csv file ' + self.getCsvFileName()  + ' is ' + '{:,}'.format( self.getNumberRows() )  )
         print('Total number of fields in csv file ' + self.getCsvFileName()  + ' is ' +  str( self.getNumberColumns() )  )
         print(' ')
@@ -107,12 +164,13 @@ class CsvFileStructure(object):
 
     def openCSV (self):
         '''
-        Name: openCSV
         Purpose: Open CSV File
-              Read header record 
-              Store first data row as sample row1
-              Store second data row as sample row2
-              Get file line count
+              Read file
+              Store first data row in self.csv_header_row1
+              Store second data row in self.csv_header_row2
+              Store row count in self.row_count
+        Input: none
+        Output: populates self.csv_header_row1, self.csv_header_row2, self.row_count
         '''    
         with open(self.csv_filename , 'rt') as self.f:
             self.row_num = 0
@@ -122,7 +180,6 @@ class CsvFileStructure(object):
 
                 if self.row_num == 1:
                     self.csv_header_row = self.row
-                    #self.header_list = self.createHeaderList(self.row)
 
                 if self.row_num == 2:
                     self.sample_row1 = self.row
@@ -133,16 +190,16 @@ class CsvFileStructure(object):
             self.row_count = self.row_num
 
                     
-    def createHeaderList(self, row_in):
+    def createHeaderList(self):
         '''
         Purpose: Get the column headers from CSV file in order to create JSON keys
-        Input:  Header row from CVV file
+        Input:  Header row from CSV file
         Output: List of strings, each string is a column header
         '''
 
-        self.first_row_seq = row_in.strip().split(',')
+        self.first_row_seq = self.csv_header_row.strip().split(',')
         self.header_list = [self.i[1:-1] for self.i in self.first_row_seq]
-        return self.header_list
+
 
     def setMongoId(self):
         '''
@@ -199,7 +256,4 @@ class CsvFileStructure(object):
             else:
                 self.column_type.append('String')
 
-        return self.column_type
-    
-
-        
+ 

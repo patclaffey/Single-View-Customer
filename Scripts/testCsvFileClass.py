@@ -6,6 +6,7 @@ class TestBT(unittest.TestCase):
     
     
     def setUp(self):
+        self.csvFile = 'test_indonesia.csv'
         pass
 
 
@@ -15,17 +16,17 @@ class TestBT(unittest.TestCase):
 
     def test_class_initialization(self):
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFileHi )
+        
+        myCsv1 = CsvFileStructure( self.csvFile )
         result = myCsv1.getStatus()
         self.assertTrue(result, msg='Class csvFileClass initialization fails  ')
 
 
     def test_getCsvFileName(self):
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
-        expected = csvFile
+
+        myCsv1 = CsvFileStructure( self.csvFile )
+        expected = self.csvFile
         result = myCsv1.getCsvFileName()
         self.assertEqual(result, expected, msg='Class csvFileClass initialization fails  ')                      
 
@@ -39,16 +40,16 @@ class TestBT(unittest.TestCase):
          'GENDER_EXPIRY_DATE', 'GENDER_LIST', 'NO_PERMISSION_RESPONSES', 'FIRST_PERMISSION_DATE', 'LAST_PERMISSION_DATE', 
          'MOST_RECENT_PERMISSION', 'OPT_OUT_DATE', 'OPTED_OUT_FLAG', 'PERMISSION_EXPIRY_DATE']
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
+
+        myCsv1 = CsvFileStructure( self.csvFile )
         result = myCsv1.getHeader()
         self.assertEqual(result,expected, msg='Class csvFileClass Header Record procedure fails  ')
         
 
     def test_getSampleRow1(self):
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
+
+        myCsv1 = CsvFileStructure( self.csvFile )
         output = myCsv1.getSampleRow1()
         result= len(output)
         self.assertNotEqual(result, 0, msg='Class csvGetSampleRow1 fails  ')   
@@ -56,8 +57,8 @@ class TestBT(unittest.TestCase):
 
     def test_getNumberRows(self):
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
+
+        myCsv1 = CsvFileStructure( self.csvFile )
         output = myCsv1.getNumberRows()
         result = output
         self.assertNotEqual(result, 0, msg='Class csvGetNumberRows fails  ')
@@ -68,10 +69,10 @@ class TestBT(unittest.TestCase):
                     'Blank', 'Blank',
                     'String', 'Blank', 'List', 'Number', 'Date', 'Date', 'String', 'Date',
                     'String', 'Date']
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
+ 
+        myCsv1 = CsvFileStructure( self.csvFile )
         sample1 = myCsv1.getSampleRow1()
-        result = myCsv1.mapCsvColumns(sample1)
+        result = myCsv1.getColumnTypes()
         self.assertEqual(result, expected, msg='Method mapCsvColumns fails  ')
 
 
@@ -84,14 +85,14 @@ class TestBT(unittest.TestCase):
          'GENDER_EXPIRY_DATE', 'GENDER_LIST', 'NO_PERMISSION_RESPONSES', 'FIRST_PERMISSION_DATE', 'LAST_PERMISSION_DATE', 
          'MOST_RECENT_PERMISSION', 'OPT_OUT_DATE', 'OPTED_OUT_FLAG', 'PERMISSION_EXPIRY_DATE']
 
-        csvFile = '/bt/import/test_indonesia.csv'
-        myCsv1 = CsvFileStructure( csvFile )
+
+        myCsv1 = CsvFileStructure( self.csvFile )
         result = myCsv1.setMongoId()
         self.assertEqual(result,expected, msg='Method setMongoId fails  ')
 
 if __name__ == '__main__':
 
-    csvFileHi = '/bt/import/test_indonesia.csv'
+
     suite = unittest.TestSuite()
 
 
