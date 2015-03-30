@@ -20,7 +20,7 @@ class OracleTable(object):
     Output: see description for class methods
     '''
 
-    def __init__(self, table_in):
+    def __init__(self, oracle_connection, source_schema, table_in):
         '''
         Purpose:  Initalize class
                   Get structure of Oracle table from all_tab_columns
@@ -30,7 +30,8 @@ class OracleTable(object):
         Input: Name of table.  Additional info from config file
         Output: Object of this class
          '''       
-        self.Connection = None
+        self.Connection = oracle_connection
+        self.schema_name = source_schema
         self.tablename = table_in
         self.user_name = ""
         self.tns_entry = ""
@@ -42,7 +43,7 @@ class OracleTable(object):
         self.status = False
 
         #Method that opens connection, does checks based on file content and structure
-        self.openConnection()
+        #self.openConnection()
 
         #create python list object to hold csv header row
         self.createHeaderList()
@@ -62,6 +63,14 @@ class OracleTable(object):
     def getStatus(self):
         return self.status
 
+    def getOracleConnection(self):
+        return self.Connection
+
+    def getSchemaName(self):
+        return self.schema_name
+
+    def getTableName(self):
+        return self.tablename
     
     def getUserName(self):
         return self.user_name

@@ -14,6 +14,8 @@ from datetime import datetime
 class CsvFileStructure(object):
     '''
     Purpose:  Creates class to represent the structure and format of a CSV file
+    Input:  CSV file name
+    Output: see description for class methods
     '''
 
     def __init__(self, file_in):
