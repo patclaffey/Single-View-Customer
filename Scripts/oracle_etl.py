@@ -282,7 +282,7 @@ def convert_row_json(header_row, row_in, column_type):
                 # if a list is empty then insert an empty list into JSON which is [ ]
                 line_dict[header_row[column_number]] = list()
             else:
-                process non empty list
+                #process non empty list
                 #otherwise convert string to list breaking on comma
                 line_dict[header_row[column_number]] = \
                     str(row_in[ column_number ]).split(',')
