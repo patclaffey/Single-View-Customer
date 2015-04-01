@@ -14,6 +14,7 @@ Exceptions: None
 import sys
 from datetime import datetime
 import cx_Oracle
+import collections
 
 
 def get_oracle_connection():
@@ -268,10 +269,27 @@ def convert_row_json(header_row, row_in, column_type):
     Output: table column count
     '''     
     row_in_num = 0
-    line_dict = {}
+    line_dict = collections.OrderedDict()
     
-    for header_num,field in enumerate(header_row):
-        line_dict[header_row[header_num]] = row_in[ header_num ]        
+    for column_number,column_name in enumerate(header_row):
+        #column_number - integer that is the index number of the column
+        #column_name - column name at a given index
+        if column_type[ column_number ] == 'List':
+            #column_type[ column_number ] - holds column type e.g. String, Number etc
+            #line_dict is dictionary, key is column name, value is column value
+            if row_in[ column_number ] is None:
+                # process empty list
+                # if a list is empty then insert an empty list into JSON which is [ ]
+                line_dict[header_row[column_number]] = list()
+            else:
+                process non empty list
+                #otherwise convert string to list breaking on comma
+                line_dict[header_row[column_number]] = \
+                    str(row_in[ column_number ]).split(',')
+        else:
+            # this is logic for columns that are not lists
+            # python automatically handles strings, numbers, dates, nulls
+            line_dict[header_row[column_number]] = row_in[ column_number ]        
     return line_dict
 
 

@@ -1,18 +1,16 @@
 #! /usr/local/bin/python3
 import unittest
 from request_etl import *
-#import csv_mongo
-#from csv_mongo import *
 class TestBT(unittest.TestCase):
 
     def setUp(self):
         self.source_name = 'Oracle'
-        self.db_name = 'any_db3'
-        self.collection_name = 'any_connection'
+        self.db_name = 'test_temp'
+        self.collection_name = 'test_temp'
         self.program_mode = ''
         self.schema_name = 'BT_DW_SVC'
         self.table_name = 'DW_SVC_ID'
-        self.row_limit = 10
+        self.row_limit = 10000000000
         pass
 
 
@@ -28,7 +26,7 @@ class TestBT(unittest.TestCase):
         result = mongo_etl2.get_mongo_collection( self.db_name, self.collection_name)
         self.assertIsNotNone( result, 'Connection fails to Mongo Database')
 
-
+    @unittest.skip('Skipping verify test')
     def test_main_verify(self):
         self.program_mode = 'Verify'
         self.row_limit = 10
