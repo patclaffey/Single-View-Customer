@@ -1,7 +1,7 @@
 #! /usr/local/bin/python3
 import unittest
-import csv_mongo
-from csv_mongo import *
+#import csv_mongo
+from request_etl import *
 class TestBT(unittest.TestCase):
 
     def setUp(self):
@@ -20,7 +20,7 @@ class TestBT(unittest.TestCase):
  
 
     def test_mongo_connection(self):
-        result = get_mongo_collection( self.db_name, self.collection_name)
+        result = mongo_etl2.get_mongo_collection( self.db_name, self.collection_name)
         self.assertIsNotNone( result, 'Connection fails to Mongo Database')
 
 
@@ -36,7 +36,7 @@ class TestBT(unittest.TestCase):
                        )
 
 
-    #@unittest.skip('Skipping csv file update test')
+    unittest.skip('Skipping csv file update test')
     def test_main_update(self):
         self.program_mode = 'Update'
         run_etl_request(self.source_name,\
@@ -48,7 +48,7 @@ class TestBT(unittest.TestCase):
                         self.collection_name
                        )
 
-    #@unittest.skip('Skipping csv file insert test')        
+    unittest.skip('Skipping csv file insert test')        
     def test_main_insert(self):
         self.program_mode = 'Insert'
         run_etl_request(self.source_name,\

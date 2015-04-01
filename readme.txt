@@ -1,86 +1,132 @@
+1.0	Linux Command Line Interface for Brandtone Mongo Database
+
+The Brandtone CLI (Command Line Interface) supports commands for the following operations
+-  commands with prefix "test" are unit tests for the ETL software
+-  commands with prefix "verify" check the data source and conversion to JSON without impacting the Mongo database
+-  commands with prefix "insert" loads data from source into mongo in insert mode
+-  commands with prefix "update" loads data from source into mongo in update mode
+
+The following two sources are supported
+-  "Oracle" - the data source is an Oracle data base
+-  "Csv_File" - the data source is a CSV File
+
+
+Some general notes about these commands:
+-  Mongo databases are created lazily.  That means no need to pre-create mongo database on the mongo server
+-  Mongo collections are created lazily.  That means no need to pre-create mongo collection on the mongo server
+-  For csv commands the CSV file must first be loaded into directory /bt/import
+-  The row limit is mainly user to verify a new source.  To process all rows ensure this number is greater than source row count.
+
+
+2.0    Command for Oracle Data Source
+
+2.1  test_oracle_mongo
+
+Command:  test_oracle_mongo
+Purpose:  Functional test suite for the Oracle to Mongo ETL softwar
+Example:  test_oracle_mongo
+Parameters;  None
+
+
+2.2  verify_oracle_mongo
+
+Command:  verify_oracle_mongo <Table_Schema_Name>  <Table_Name>  <Row_Limit>
+Purpose:  check the data source and conversion to JSON without impacting the Mongo database
+Example:  verify_oracle_mongo BT_DW_SVC DW_SVC_ID 10
+Parameters;  
+	Table_Schema_Name  -  Oracle schema that owns table
+	Table_Name
+	Row_Limit  -  limits number of rows processed
+
+
+2.3  insert_oracle_mongo
+
+Command:  insert_oracle_mongo <Table_Schema_Name>  <Table_Name>  <Row_Limit> <Mongo_Database> <Mongo_Collection>
+Purpose:  insert all data from an Oracle table into a Mongo collection
+Example:  insert_oracle_mongo BT_DW_SVC DW_SVC_ID 1000000000 my_mongo_db my_collection
+Parameters;  
+	Table_Schema_Name  -  Oracle schema that owns table
+	Table_Name
+	Row_Limit  -  limits number of rows processed, set to a very high value to ensure all data is loaded
+	Mongo_Database - Name of Mongo Database.  No need to pre-define database name on Mongo
+	Mongo_Collection - Name of Mongo Collection.  No need to pre-define collection name on Mongo
+
+
+2.4  update_oracle_mongo
+
+Command:  update_oracle_mongo <Table_Schema_Name>  <Table_Name>  <Row_Limit> <Mongo_Database> <Mongo_Collection>
+Purpose:  update all data from a CSV File into a Mongo collection
+Example:  update_oracle_mongo BT_DW_SVC DW_SVC_ID 10000000 my_mongo_db my_collection
+Parameters;  
+	Table_Schema_Name  -  Oracle schema that owns table
+	Table_Name
+	Row_Limit  -  limits number of rows processed, set to a very high value to ensure all data is loaded
+	Mongo_Database - Name of Mongo Database.  No need to pre-define database name on Mongo
+	Mongo_Collection - Name of Mongo Collection.  No need to pre-define collection name on Mongo
 
 
 
-1.0	Loading Brandtone CSV Files into Mongo
+3.0    Command for CSV File as a Data Source
 
-The following three commands are available on the VM to load Brandtone SVC CVS data into the Mongo database:
+3.1  test_csv_mongo
 
-- verify_csv_mongo :  the purpose of this command is to check the CSV file and verify that it reads the CSV data correctly.  
-This command does not affect the mongo database.  The CSV file must pass this check in order to insert or update mongo.
-
-
-- insert_csv_mongo : use this command to write the data from the CVS file to mongo in insert mode.
-
-- update_csv_mongo : use this command to write the data from the CVS file to mongo in update mode.
+Command:  test_csv_mongo
+Purpose:  Functional test suite for the CSV File to Mongo ETL software
+Example:  test_csv_mongo
+Parameters;  None
 
 
-The above command use the same parameters
+3.2  verify_csv_mongo
 
-parameter1 : name of mongo database.  In mongo databases are created lazily - they do not need to be predefined
-parameter2 : name of mongo collection.  In mongo collections are created lazily - they do not need to be predefined
-parameter3 : CSV file name.  The CSV file must be loaded into directory /bt/import
-parameter4 : number representing row limit.  Limit rows processed to this number.  To process all rows ensure this number is greater than file row count.
-
-
-
-1.1	verify CSV file command 
-
-The command verify_csv_mongo verifies the CSV file.  The CSV file must be pre-loaded in directory /bt/import
-Here is an example of usage:
-	verify_csv_mongo any_db any_collection “Indonesia_1.csv”    100
-The above command checks the first 100 rows of file “Indonesia_1.csv”.
-The first two parameters (any_db, any_database) are required but not used.
+Command:  verify_csv_mongo <Csv_File_Name>  <Row_Limit>
+Purpose:  check the data source and conversion to JSON without impacting the Mongo database
+Example:  verify_csv_mongo “Indonesia_1.csv” 10
+Parameters;  
+	Csv_File_Name  -  file name which must exist in folder /bt/import
+	Row_Limit  -  limits number of rows processed
 
 
-1.2	insert data into mongo from CSV file
+3.3  insert_csv_mongo
 
-The command insert_csv_mongo reads the CSV file and inserts the contents into mongo.  The CSV file must be pre-loaded in directory /bt/import
-Here is an example of usage:
-	insert_csv_mongo any_db any_collection “Indonesia_1.csv”    100000000
-
-parameter1 : any_db is the name of mongo database.
-parameter2 : any_collection is name of mongo collection.
-parameter3 : Indonesia_1.csv is CSV file name.  The CSV file has been loaded into directory /bt/import
-parameter4 : 100000000 is the row limit.  This is set to a number larger than file row count in order to load all data from csv file.
-
-
-
-1.3	update data in mongo from CSV file
-
-The command update_csv_mongo reads the CSV file and updates the mongo database.  The CSV file must be pre-loaded in directory /bt/import
-Here is an example of usage:
-	update_csv_mongo any_db any_collection “Indonesia_v1.csv”    100000000
-
-parameter1 : any_db is the name of mongo database.
-parameter2 : any_collection is name of mongo collection.
-parameter3 : Indonesia_v1.csv is CSV file name.  The CSV file has been loaded into directory /bt/import
-parameter4 : 100000000 is the row limit.  This is set to a number larger than file row count in order to load all data from csv file.
+Command:  insert_csv_mongo <Csv_File_Name>  <Row_Limit> <Mongo_Database> <Mongo_Collection>
+Purpose:  insert all data from a CSV File into a Mongo collection
+Example:  insert_csv_mongo “Indonesia_1.csv” 10000000 my_mongo_db my_collection
+Parameters;  
+	Csv_File_Name  -  file name which must exist in folder /bt/import
+	Row_Limit  -  limits number of rows processed, set to a very high value to ensure all data is loaded
+	Mongo_Database - Name of Mongo Database.  No need to pre-define database name on Mongo
+	Mongo_Collection - Name of Mongo Collection.  No need to pre-define collection name on Mongo
 
 
-2.0 Unit test Scripts
+3.4  update_csv_mongo
 
-For python development a test driven approach is used.
-
-2.1 Test script for the Csv Loader Class
-
-run the following command:
-	test_csv_file_class
-
-
-2.2 Test script for the Verify input file
-
-run the following command:
-	test_csv_mongo
-Running above command does not write any data to mongo
+Command:  update_csv_mongo <Csv_File_Name>  <Row_Limit> <Mongo_Database> <Mongo_Collection>
+Purpose:  update all data from a CSV File into a Mongo collection
+Example:  update_csv_mongo “Indonesia_1.csv” 10000000 my_mongo_db my_collection
+Parameters;  
+	Csv_File_Name  -  file name which must exist in folder /bt/import
+	Row_Limit  -  limits number of rows processed, set to a very high value to ensure all data is loaded
+	Mongo_Database - Name of Mongo Database.  No need to pre-define database name on Mongo
+	Mongo_Collection - Name of Mongo Collection.  No need to pre-define collection name on Mongo
 
 
 
-3.0  Bill of Software
+
+
+
+4.0  Bill of Software
 
 All code is in git - repository name is SVC (Single View of the Customer)
 
-Directory structure is as follows:
-Scripts - copy all files to /usr/local/bin/Scripts on VM machine
-bin - copy all files to /usr/local/bin on VM machine
-import - copy all files to /bt/import on VM machine
+Linux directory structure is as follows:
+/usr/bin  -  the executable shell scripts are loaded here
+/usr/lib/svc  -  all python code is loaded here
+/bt/import - CSV files must be installed in this directory 
+
+Linux directories are used as per the following Linux standard:
+http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html
+
+
+
+
  
