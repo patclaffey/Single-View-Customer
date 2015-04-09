@@ -9,7 +9,10 @@ from pymongo import MongoClient
 from collections import OrderedDict
 import json
 from datetime import datetime
+from v1.svc_util import SvcCountry
 
+
+        
 
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
@@ -21,16 +24,17 @@ def index(request):
 def svc_country_profile(request, country_code, profile_id):
     client = MongoClient()
 
-    db_name = None
-    db_col_name = None
+    country_data = SvcCountry(country_code)
+    db_name = country_data.get_db_name()
+    db_col_name = country_data.get_db_collection_name()
 
-    if country_code.upper() == 'ID':
+    '''if country_code.upper() == 'ID':
         db_name = 'ID'
         db_col_name = 'BT_SVC_ID'
     elif country_code.upper() == 'ZA':
         db_name = 'ZA'
         db_col_name = 'BT_SVC_ZA'
-
+    '''
 
     db_profile = client[db_name][db_col_name].find_one({"PROFILE_ID":int(profile_id)})
 
@@ -39,7 +43,7 @@ def svc_country_profile(request, country_code, profile_id):
         output = json.dumps(  data_out, default=date_handler )
     else:
         data_out = {}
-        output = {"PROFILE_ID":profile_id}
+        output = {"PROFILE_ID":profile_id, "db_name":db_name, "col_name": db_col_name}
 
     return HttpResponse( str(output) )
 
