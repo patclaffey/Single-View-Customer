@@ -1,1 +1,1 @@
-/usr/local/bin/Scripts/csv_mongo.py $1 $2 /bt/import/$3 Update $4
+/usr/lib/svc/request_etl.py "Csv_File" "Update" "None" /bt/import/$1 $2 $3 $4
