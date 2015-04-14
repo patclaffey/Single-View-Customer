@@ -135,17 +135,25 @@ Parameters;
 
 5.0  Bill of Software
 
-All code is in git - repository name is SVC (Single View of the Customer)
+5.1 Git Directory Structure
+Git (BitBucket) is Brandtone's source control system.  All project code is in git - repository name is SVC (Single View of the Customer).
+The code is structured as follows
+-  the README file is in the top level folder.  There are two versions - the .rtf is the formated printer friendly copy.  The .txt is included because is displays automatically in bitbucket.
+- /scripts folder contains all the Python etl scripts
+- /bin bucket contains the Linux executables for the Linux ETL Command Line Interface
+- /import contains a text csv file
+- /mysite contains all the Python Django WEb Services code
 
+5.2 Linux Directory Structure
 Linux directory structure is as follows:
-/usr/bin  -  the executable shell scripts are loaded here
-/usr/lib/svc  -  all python code is loaded here
+/usr/lib/svc  -  the Python ETL code and Python Django code (for web services) is copied to this directory
+/usr/bin  -  the Linux ececutables from  git /bin directory are copied here
 /bt/import - CSV files must be installed in this directory 
 
-Linux directories are used as per the following Linux standard:
+Linux directories are defined as per the following Linux standard:
 http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html
 
-
-
+6.0	Installation Notes
+Installation notes will be added here e.g. notes on setup of Apache web server and mod_wsgi module for interfacing Apache and Python Django
 
  

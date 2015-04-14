@@ -137,18 +137,28 @@ Parameters;  \par
 \par
 \b\fs28 5.0  Bill of Software\b0\fs22\par
 \par
-All code is in git - repository name is SVC (Single View of the Customer)\par
+\b\fs24 5.1 Git Directory Structure\b0\fs22\par
+Git (BitBucket) is Brandtone's source control system.  All project code is in git - repository name is SVC (Single View of the Customer).\par
+The code is structured as follows\par
+-  the README file is in the top level folder.  There are two versions - the .rtf is the formated printer friendly copy.  The .txt is included because is displays automatically in bitbucket.\par
+- /scripts folder contains all the Python etl scripts\par
+- /bin bucket contains the Linux executables for the Linux ETL Command Line Interface\par
+- /import contains a text csv file\par
+- /mysite contains all the Python Django WEb Services code\par
 \par
+\b\fs24 5.2 Linux Directory Structure\b0\fs22\par
 Linux directory structure is as follows:\par
-/usr/bin  -  the executable shell scripts are loaded here\par
-/usr/lib/svc  -  all python code is loaded here\par
+/usr/lib/svc  -  the Python ETL code and Python Django code (for web services) is copied to this directory\par
+/usr/bin  -  the Linux ececutables from  git /bin directory are copied here\par
 /bt/import - CSV files must be installed in this directory \par
 \par
-Linux directories are used as per the following Linux standard:\par
+Linux directories are defined as per the following Linux standard:\par
 {\field{\*\fldinst{HYPERLINK "http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html"}}{\fldrslt{\ul\cf1 http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html}}}\f0\fs22\par
 \par
+\b\fs28 6.0\tab Installation Notes\b0\fs22\par
+Installation notes will be added here e.g. notes on setup of Apache web server and mod_wsgi module for interfacing Apache and Python Django\par
 \par
-\par
+Enivornment variables are needed to support the cx_Oracle Python Module and also to support the Apache mod_wsgi module.  These are setup in file /etc/profile.d/oracle_env.sh\par
 \par
  \par
 }
