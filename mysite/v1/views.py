@@ -83,3 +83,24 @@ def svc_country(request, country_code):
     
     output = json.dumps(  data_out)
     return HttpResponse( str(output) )
+
+def svc_country_summary(request, country_code):
+    client = MongoClient()
+    country_code_in = country_code
+    country_data = SvcCountry(country_code_in)
+    db_name = country_data.get_db_name()
+    
+    country_code_upper = country_code_in.upper()
+    #db_col_name = db_name['SVC_SUMMARY']
+
+    db_summary = client[db_name]["SVC_SUMMARY"].find_one({"_id": country_code_upper}, {'test':0}, as_class=OrderedDict)
+
+    if db_summary is not None:
+        data_out = OrderedDict(db_summary)
+        output = json.dumps(  data_out, default=date_handler )
+    else:
+        data_out = {}
+        output = {}
+        #output = {'CC':[country_data, db_name, country_code_in,  country_code_upper]}
+
+    return HttpResponse( str(output) )

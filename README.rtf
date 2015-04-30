@@ -39,6 +39,17 @@ Parameters;  \par
 \tab Country_Code  -  allowed values are za or id \par
 \tab Msisdn_Value  -  any msisdn value for that country\par
 \par
+\b\fs24 1.4 SVC summary for a given country for customer segmentation\b0\fs22\par
+The purpose of this search is to test an non-indexed Mongo search. \par
+\par
+url:  {\field{\*\fldinst{HYPERLINK "http://10.177.177.60/svc/v1/<Country_Code>/summary/"}}{\fldrslt{\ul\cf1 http://10.177.177.60/svc/v1/<Country_Code>/summary/}}}\f0\fs22\par
+Purpose:  Get the SVC summary for a given country\par
+Example:  {\field{\*\fldinst{HYPERLINK "http://10.177.177.60/svc/v1/za/summary/"}}{\fldrslt{\ul\cf1 http://10.177.177.60/svc/v1/za/summary/}}}\f0\fs22\par
+Example:  {\field{\*\fldinst{HYPERLINK "http://10.177.177.60/svc/v1/id/summary/"}}{\fldrslt{\ul\cf1 http://10.177.177.60/svc/v1/id/summary/}}}\f0\fs22\par
+Parameters;  \par
+\tab Country_Code  -  allowed values are za or id \par
+\par
+\par
 \b\fs28 2.0\tab Overview of ETL process for Brandtone MongoDb\b0\fs22\par
 A linux CLI (Command Line Interface) has been developed using the Python programming  language to load data into Mongo from two data sources.  These two data sources are  any Oracle database or any Spreadsheet. This ETL software is hosted with the Brandtone  Mongo database on the server 10.177.177.60.  \par
 \par
@@ -135,9 +146,20 @@ Parameters;  \par
 \tab Mongo_Collection - Name of Mongo Collection.  No need to pre-define collection  name on Mongo\par
 \par
 \par
-\b\fs28 5.0  Bill of Software\b0\fs22\par
+\b\fs28 5.0  SVC Country Summary\b0\fs22\par
+The linux command line interface is used to refresh the json document that contains the SVC summary for consumption by the SVC Web Application\par
+\b\fs24 summarize_country_collection\b0\fs22\par
+Command:   \fs24 summarize_country_collection \fs22 <Country Code> \par
+Purpose:  \par
+Example:   \fs24 summarize_country_collection ZA\par
+\fs22 Example:   \fs24 summarize_country_collection ID\fs22\par
+Parameters;  \par
+\tab Country_Code  - valid values are ZA and ID (uppercase)\par
 \par
-\b\fs24 5.1 Git Directory Structure\b0\fs22\par
+\par
+\b\fs28 6.0  Bill of Software\b0\fs22\par
+\par
+\b\fs24 6.1 Git Directory Structure\b0\fs22\par
 Git (BitBucket) is Brandtone's source control system.  All project code is in git - repository name is SVC (Single View of the Customer).\par
 The code is structured as follows\par
 -  the README file is in the top level folder.  There are two versions - the .rtf is the formated printer friendly copy.  The .txt is included because is displays automatically in bitbucket.\par
@@ -146,7 +168,7 @@ The code is structured as follows\par
 - /import contains a text csv file\par
 - /mysite contains all the Python Django WEb Services code\par
 \par
-\b\fs24 5.2 Linux Directory Structure\b0\fs22\par
+\b\fs24 6.2 Linux Directory Structure\b0\fs22\par
 Linux directory structure is as follows:\par
 /usr/lib/svc  -  the Python ETL code and Python Django code (for web services) is copied to this directory\par
 /usr/bin  -  the Linux ececutables from  git /bin directory are copied here\par
@@ -154,11 +176,17 @@ Linux directory structure is as follows:\par
 \par
 Linux directories are defined as per the following Linux standard:\par
 {\field{\*\fldinst{HYPERLINK "http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html"}}{\fldrslt{\ul\cf1 http://www.tldp.org/HOWTO/HighQuality-Apps-HOWTO/fhs.html}}}\f0\fs22\par
+\b\fs28\par
 \par
-\b\fs28 6.0\tab Installation Notes\b0\fs22\par
+7.0\tab Installation Notes\b0\fs22\par
 Installation notes will be added here e.g. notes on setup of Apache web server and mod_wsgi module for interfacing Apache and Python Django\par
-\par
 Enivornment variables are needed to support the cx_Oracle Python Module and also to support the Apache mod_wsgi module.  These are setup in file /etc/profile.d/oracle_env.sh\par
+The Apache web server is installed in directory /www/http.  The command to restart Appache is \par
+"apachectl -k restart" - this executable is in directory /www/http/bin.    A automatic process needs to be setup to startup Apache after a reboot.  At present Apache needs to be manuallt started after reboot.\par
+Issue with Mongo logs filing up (and degrading performance) was fixed by db.setProfilingOption(  \{ "slowms": 2000 \} ).  This command changes threshold to log slow commands from default value of 200ms to 2 seconds.\par
+\par
+\par
+\par
 \par
  \par
 }
