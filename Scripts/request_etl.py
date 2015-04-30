@@ -1,40 +1,64 @@
 #! /usr/local/bin/python3
 '''
-
-
-
+Purpose:
+    Loads any Oracle table or any spreadsheet into and Mongo collection in any database.
+    Supports initial data loads and incremental loads
+    Verify mode allows data source checking without writing or impacting mongo
+    
+Description:
+    Accepts ETL requests for Brandtone MongdDB database
+    Accepts ETL requests from Linux command line
 '''
+
 import sys
 from datetime import datetime
 import pymongo
 from pymongo import MongoClient
-#import csvFileClass
 import cx_Oracle
-#import oracleClass
 import oracle_etl
 import mongo_etl2
 import csv_file_etl
         
 
-
 def report_time(message_in):
+    '''
+    Purpose: Prints Current date time and information message
+    Output: Prints information message and date and time
+    Parameters;  Message In
+    '''
     start_time = datetime.now()
-    print(message_in + ' ' +  start_time.strftime('%H:%M:%S')   )
+    print( start_time.strftime('%c') + ' ' + message_in )
     return start_time
 
+
 def report_elapsed_time(message_in, start_time, end_time ):
+    '''
+    Purpose: Prints elapsed time and information message
+    Output: Prints information message and elapsed time
+    Parameters;  Message In, start and end times
+    '''
     elapsed_time = end_time - start_time
     print(message_in + ' ' +  str(elapsed_time  )  )
     
-
-
-
 
 def run_etl_request(source_type, program_mode,\
                     source_schema, source_object_name,  row_limit,\
                     db_name, collection_name):
     '''
-    Purpose: 
+    Purpose:
+    Accepts ETL requests for Brandtone MongdDB database
+    Accepts ETL requests from Linux command line
+
+    Description:
+         
+    Parameters:
+    source_name:  two supported values are "Oracle" or "Csv_File"   
+    program_mode: three supported values are Verify, Insert, Update
+    schema_name: name of Oracle schema that owns table (leave blank for Csv File
+    data_store_name: Oracle table name of Csv File name
+    row_limit: Specifies number of rows to process
+    db_name: Name of target Mongo Database
+    collection_name : Name of target Mongo Collection
     '''
     #log process start time
     print('')
@@ -48,15 +72,21 @@ def run_etl_request(source_type, program_mode,\
           (source_description, source_object_name ) )
     elif source_type == 'Oracle':
         source_description = 'Oracle Database'
+        
         oracle_connection = oracle_etl.get_oracle_connection()
+        if oracle_connection is None:
+            print("**************")
+            print("Oracle is not available.  Error, cannot perform ETL as Oracle is not available")
+            print("Please verify Oracle connection information in file svc_config.py in Python Scripts directory.")
+            print("**************")
+            return
+            
         mySourceObj1 = oracle_etl.OracleTable( oracle_connection, source_schema, source_object_name )
         print('Source type is {}. Source table name is {}'.format\
           (source_description, source_object_name ) )
     else:
         source_description = 'Undefined Source'
         mySourceObj1 = None
-        
-
 
 
     # three program modes are Verify, Insert, Update
@@ -113,7 +143,11 @@ def run_etl_request(source_type, program_mode,\
 
 
 if __name__ == '__main__':
-
+    '''
+    Purpose:
+    Accepts ETL requests from Linux command line
+    '''
+    
     source_name = sys.argv[1]  # Csv_File,  Oracle
     program_mode = sys.argv[2]  # Verify, Insert, Update
     schema_name = sys.argv[3] 
@@ -132,4 +166,3 @@ if __name__ == '__main__':
                     )
 
 
-    

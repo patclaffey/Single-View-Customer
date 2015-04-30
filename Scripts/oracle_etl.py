@@ -15,6 +15,7 @@ import sys
 from datetime import datetime
 import cx_Oracle
 import collections
+import svc_config
 
 
 def get_oracle_connection():
@@ -25,11 +26,17 @@ def get_oracle_connection():
               Get tns_entry
     '''
     oracle_connection= None
+
+    ORACLE_USERNAME = svc_config.ORACLE_USERNAME
+    ORACLE_PASSWORD = svc_config.ORACLE_PASSWORD
+    TNS_IDENTIFIER = svc_config.TNS_IDENTIFIER
     
     try:
-        oracle_connection = cx_Oracle.connect('pclaffey[BT_DW_ODS]/Seafield89@DWHDF07')
+        oracle_connection = cx_Oracle.connect( ORACLE_USERNAME + '/' \
+                                              + ORACLE_PASSWORD + '@' \
+                                              + TNS_IDENTIFIER )
     except:
-        pass
+        oracle_connection= None
     
     return oracle_connection
 
@@ -300,6 +307,7 @@ def import_oracle( program_mode, tableObj, mongo_collection, row_limit ):
                    Verify - verify that input is read correctly
                    Insert - insert data into mongo
                    Update - update data in mongo
+                            upsert mode is true, doc is inserted if it does not exist
              tableObj - object representing table structure
              mongo_collection - Mongo collection object
              row_limit - limit number of rows
@@ -343,7 +351,7 @@ def import_oracle( program_mode, tableObj, mongo_collection, row_limit ):
             elif program_mode == "Insert":
                 mongo_collection.insert(row_dict)
             elif program_mode == "Update":
-                mongo_collection.update({'_id': row_dict['_id']},row_dict) 
+                mongo_collection.update({'_id': row_dict['_id']},row_dict, True ) 
             else:
                 pass
 
